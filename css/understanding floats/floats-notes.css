@@ -1,0 +1,325 @@
+/**
+* - Understanding Floats
+--------------------------------------------------------------------------------------
+* - Although floats were not originally intended to construct page layouts, they have
+    served that job well. In order to make sense of floats, however, we must first bear in
+    mind their original purpose.
+
+* - A float pulls an element to one side of its container, thereby allowing document flow to wrap around it. This 
+    layout was common in newspaper and magazine designs, so floats was added to CSS to achieve this effect.
+
+* - A floated element is removed from the document flow and pulled to the edge of the container. The document flow then resumes, but it’ll wrap around
+    the space where the floated element now resides.
+
+* - If you float multiple elements in the same direction, they’ll stack alongside one another. However, it is important to note that floats was not intended
+    to be used in the manner described.
+
+* - In the early days of CSS, developers realized they could use this simple tool to move sections of the page around to build all sorts of layouts. It was not 
+    intended to be a page layout tool, but for nearly two decades, we’ve been using it as such.
+
+* - This was done because it was the only option. Eventually, the ability to use display: inline-block or display: table emerged, which offered alternatives, 
+    albeit limited ones. Until the addition of the flexbox and grid layouts in the past few years, floats remained designer's heavy hitter for page layout.
+
+* - As a demonstration for this topic, we will be building a simple web page; demonstrating how floats works and some other quirks that accompany it. You will also 
+    discover that floats are long gone and for most of your projects, flexbox and grids are fine.
+
+* - Please take a look at the design in floats-final folder for the completed project. Within this folder, you will find floats-final.css and floats-final.html 
+    file that you see the source code for understanding. The source code has also been thoroughly commented to aid understanding.
+
+* - The code in floats-final.html gives you the page structure: a header and a main element that will contain the rest of the page. Inside the main element is the page title, 
+    followed by ananonymous div (that is, a div with no class or ID). This serves to group the four gray media elements, each of which contains an image and a body element.
+
+* - Let's work towards what we have floats-final.css. Open floats-1 folder to reveal floats-1.css and floats-1.html files. 
+
+* - The floats-1.css file contains the following code:
+    
+*/
+
+/* -------------------------------- */
+/** Code Snippet for floats-1.css **/
+/* --------------------------------- */
+/* this is the Global border-box fix. */
+:root {
+    box-sizing: border-box;
+} 
+
+*,
+::before,
+::after {
+    box-sizing: inherit;
+} 
+
+body {
+    background-color: #eee;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+/* Lobotomized owl global margins */
+body * + * {
+    margin-top: 1.5em;
+} 
+    
+
+header {
+    padding: 1em 1.5em;
+    color: #fff;
+    background-color: #0072b0;
+    border-radius: .5em;
+    margin-bottom: 1.5em;
+}
+
+.main {
+    padding: 0 1.5em;
+    background-color: #fff;
+    border-radius: .5em;
+}
+
+/**
+* - This sets some base styles for the page, including a box-sizing fix and lobotomized owl pattern. 
+    Next, you’ll want to constrain the width of the page contents. Notice the light gray margins on both 
+    sides and how both the header and the main container are equal widths within.
+    
+    This layout is common for centering content on a page. You can achieve it by placing
+    your content inside two nested containers and then set margins on the inner container to position it within the outer one. This common 
+    layout is called the Double-Container pattern and named by developer Brad Westfall. See https://css-tricks.com/author/bradwestfall/ 
+    for more about him.
+
+* - In our example, <body> serves as the outer container. By default, this is already 100% of the page width, so you won’t have to apply any 
+    new styles to it. Inside that, you’ve wrapped the entire contents of the page in a <div class="container"> , which serves 
+    as the inner container. To that you’ll apply a max-width and auto margins to center the contents. Add the code below to your stylesheet.
+
+* - By using max-width instead of width, the element shrinks to below 1080 px if the screen’s viewport is smaller than that. 
+    That is to say, in smaller viewports, the inner ontainer will fill the screen, but on larger ones, it’ll 
+    expand to 1080 px. This is important to avoid horizontal scrolling on devices with smaller screens.
+
+* - We then add the following to our code: 
+
+*/
+
+/* Please see floats-2 folder which contains floats-2.html and floats-2.css. The following code has been added in addtion to code from earlier snippet */
+.container {
+    max-width: 1080px; /* Sets a maximum width of 1,080 px */
+    margin: 0 auto;
+}
+
+.media {
+    float: left; /* box to the left*/
+    width: 50%; /* Sets a width to fit two boxes across the page */
+    padding: 1.5em;
+    background-color: #eee;
+    border-radius: 0.5em;
+}
+
+
+
+/**
+* Caveats and Quirks 
+
+*  1. In the snippet above; floats-2.css and floats-2.html from floats-2 folder; you'll notice that the white background does not extend 
+    down to encompass the media boxes. To see this on your page, add the following code to your stylesheet. Then we’ll look at
+    why this happens and how you can fix it.
+
+*  2. This is not an uncommon issue, in fact, it is the normal intended behaviour of floats. The problem is that, unlike elements in the normal document flow, 
+    floated elements do not add height to their parent elements. This may seem odd, but it goes back to the original purpose of floats.
+
+*  3. Floats are intended to allow text to wrap around them. When you float an image inside a paragraph, the paragraph does not grow to contain the image. 
+    This means, if the image is taller than the text of the paragraph, the next paragraph will start immediately below the text of he first, and the text in 
+    both paragraphs will wrap around the float.
+    
+*  4. In your page, everything inside the main element is floated except for the page title, so only the page title contributes height to the container, 
+    leaving all the floated media elements extending below the white background of the main. This isn’t the behavior we want, so let’s fix it.
+
+*  5. One way you can correct this is with the float’s companion property, clear . If you place an element at the end of the main container and use clear, 
+    it causes the container to expand to the bottom of the floats. The code in the next section: floats-3 shows, in principle, what we want to do. 
+    You can add this to your page temporarily to see how it works.
+
+*/
+
+
+/** floats-3 */
+/*
+* - In the floats-3 folder, you will find floats-3.html and floats-3.css files. The code below:
+* - Look within the floats-3.html file on line 
+*
+* - The clear: both declaration causes this element to move below the bottom of floated elements, rather than beside them. 
+    You can give this property the value left or right to clear only elements floated to the left or right, respectively. Because this empty div
+    itself is not floated, the container will extend to encompass it, thereby containing the floats above it as well.
+    
+    This sizes the container how you want, but it’s rather hacky; you’re adding unwanted markup to your HTML to do the work that should be done by the CSS. 
+    Go ahead and delete that empty div . Let’s look at a way you can accomplish this purely in your CSS.
+
+
+*/
+
+
+
+/** Clearfix ** /
+/*
+* - Instead of adding an extra div to your markup, you’ll use a pseudo-element. By using the ::after pseudo-element selector, 
+    you can effectively insert an element into the DOM at the end of the container, without adding it to the markup.
+
+* - The section below shows a common approach to the problem of containing floats, called a clearfix. (Some developers like to abbreviate the class name to cf , 
+    which is conveniently also an abbreviation for “contain floats.”) Add the code below to the stylesheet: 
+
+    .clearfix::after {
+        display: block;
+        content: " ";
+        clear: both;
+    }
+
+* - We'll add this code above to floats-4.css which is inside floats-4 folder. Ensure you check the folder.
+* - It’s important to know that the clearfix is applied to the element that contains the floats; a common mistake is to apply it to the wrong element, 
+    such as the floats or the container after the one that contains them.
+
+* - One inconsistency with this clearfix remains: Margins of floated elements inside won’t collapse to the outside of the clearfixed container; but, 
+    margins of non-floated elements will collapse as normal. You can see this in your page where the heading “Running tips” is pressed directly against 
+    the top of the white <main> in floats-4.html; its margin has collapsed out of the container.
+
+* - Some developers prefer to use a modified version of the clearfix that will contain all margins because it can be slightly more predictable. 
+    Adding this version to your page will prevent the top margin of the page title from collapsing outside of the main, as shown in floats-5.html inside the 
+    floats-5 folder, leaving appropriate spacing above the heading.
+
+* - For the modified version, update the clearfix in your stylesheet to match the code below: 
+
+    .clearfix::before,
+    .clearfix::after {
+        display: table;
+        content: " ";
+    }
+    .clearfix::after {
+        clear: both;
+    }
+
+* - Again, you will find this in floats-5 folder. Please look for floats-5.css file
+    
+    This version makes use of display: table rather than display: block . By applying this to both the ::before and ::after pseudo-elements, 
+    you’ll contain any child elements’ margins at both the top and bottom of the container.
+
+*/
+
+
+/** Floats Catching **/
+/*
+* - Now that the white container contains the floated media elements on your page, another issue becomes apparent: 
+    The four media boxes aren’t laying out in two even rows like you want. Instead, the first two boxes (“Strength” and “Cadence”) are in a
+    row as expected, but the third box (“Change it up”) is on the right, beneath the second box. This leaves a large gap below the first box, 
+    which happens because the browser places floats as high as possible.
+
+* - Because box Cadence is shorter than box Strength, there’s room for box 3 beneath it. Instead of clearing box Stength, box Change it up “catches” on it. 
+    That is to say, it doesn’t float all the way to the left edge, but rather floats against the bottom corner of box Strength.
+
+* - The exact nature of this behavior is dependent on the heights of each of the floated blocks. 
+    Even a 1 px difference in element heights can cause this problem. On the other hand, if box Strength is shorter than box Cadence, there’ll be no edge for 
+    the third box to catch on, and you won’t see the problem until the content changes later, resulting in changed element heights.
+
+* - By floating a series of elements to one side, you can end up with a wild array of layouts, depending on the heights of each box. 
+    Even changing the browser width can alter things as this will affect line wrapping and will change the heights of the elements.
+
+* - The fix for this is simple: The third float needs to clear the floats above it. Or, more generally, the first element of each row needs to clear the 
+    float above it. Because you know you have two boxes per row, you’ll need the odd numbered elements to each clear the row above. 
+    You can target these with the :nth-child() pseudo-class selector. Add this ruleset to your stylesheet: This can be found in floats-6 folder's floats-6.css
+
+*/
+
+.media {
+    float: left;
+    width: 50%;
+    padding: 1.5em;
+    background-color: #eee;
+    border-radius: 0.5em;
+    }
+
+.media:nth-child(odd) {
+    clear: left;
+}
+
+/**
+*  - This code will work even if you add more elements to the page later. It targets the first, third, fifth elements, and so on. If, instead, 
+    you had three items per row, you could target every third with the selector .media:nth-child(3n+1).
+
+* - This technique for clearing each row only works when you know how many elements are on each row. If the width is defined using something other
+    than a percentage, the number of items can vary, depending on the viewport width. In this case, your best bet is to use a different layout 
+    technique such as the flexbox or inline-block elements.
+
+* - Let’s also add margins to our media elements to provide a gutter between them. The lobotomized owl will also add a top margin to every 
+    element except the first. This misaligns the elements in the top row, so you’ll need to reset the top margin on those as well. 
+    Update your stylesheet to match the following code. You can find this is floats-7 folder.
+
+*/
+
+.media {
+    float: left;
+    margin: 0 1.5em 1.5em 0;
+    width: calc(50% - 1.5em);
+    padding: 1.5em;
+    background-color: #eee;
+    border-radius: 0.5em;
+}
+
+/* Adds a right and bottom margin
+    to each media element
+    Subtracts the margin
+    from the width to avoid
+    unwanted line wrapping 
+*/
+.media:nth-child(odd) {
+    clear: left;
+}
+
+/*
+* - By adding right margins to the elements, they’ll no longer fit two to a row, so you’ll
+    have to subtract an equal amount from the element width using calc() .
+*/
+
+
+/** Media Objects and Block Formatting Context */
+
+/*
+* - Now that each of the four gray boxes is laid out, let’s look at their contents. In our
+intended design, we have an image on one side and a block of text beside it. This is another common pattern in page layouts, which web developer Nicole
+Sullivan has called the “media object.”
+
+* - This pattern can be implemented in a number of ways, including the flexbox or table displays, but we’ll do it using floats. The markup for one of the media objects in your
+    page looks like this:
+
+    <div class="media">
+        <img class="media-image" src="shoes.png">
+        <div class="media-body">
+            <h4>Change it up</h4>
+            <p>
+                Don't run the same every time you hit the
+                road. Vary your pace, and vary the distance
+                of your runs.
+            </p>
+        </div>
+    </div>
+
+
+* - We’ve added the classes media-image and media-body to the left and right parts of each media object, which you’ll use to position them. You’ll start by floating the image to
+the left.  When the text is long enough, it wraps around the floated element. This is the normal float behavior, but it’s not what we want in this case.
+
+* - Take a look at floats-8.css so that your page matches the displayed outcome from floats-8.html, then we’ll
+    take a look at how you can fix it. This code also removes the top margins from the media body and the title within.
+*/
+
+.media-image {
+    float: left;
+}
+.media-body {
+    margin-top: 0;
+}
+.media-body h4 {
+    margin-top: 0;
+}
+
+/*
+* - To fix the behavior of the text, you’ll need to understand a little more about how
+    floats work.
+
+  - If you examine the media body in your browser’s DevTools (right-click and select Inspect or Inspect Element), 
+   you’ll see that its box extends all the way to the left, so it envelops the floated image. 
+   The text inside the body wraps around the image, but once it’s clear of the bottom of the image, it moves all the way to the left of the box. 
+   What we want instead is to position the media body’s left edge to the right of the floated image.
+
+* - Let’s set the overflow value in your stylesheet. See floats-9.css.
+*/
